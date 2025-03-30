@@ -1,0 +1,165 @@
+    <!-- lyrdy theme is for UptimeMatrix 3.x which is in heavy development, expect bugs and changes. -->
+
+    <!-- 
+    
+    -----WARNING-----
+    DO NOT USE IN PRODUCTION, THIS IS DESIGNED FOR THEME DEVELOPERS AND FOR TESTING PURPOSES ONLY.
+    -----WARNING-----
+
+    -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Page</title>
+    <link rel="shortcut icon" href="#" id="favicon-shortcut">
+    <link rel="icon" type="image/x-icon" href="#" id="favicon-standard">
+    <script src="js/config.js"></script>
+    <script>
+      if (window.config && config.site && config.site.favicon) {
+        document.getElementById('favicon-shortcut').href = config.site.favicon;
+        document.getElementById('favicon-standard').href = config.site.favicon;
+        if (config.site.siteName) {
+          document.title = config.site.siteName;
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <div id="loading-animation">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="#" id="logo-link" data-um="status">
+                    <div class="logo-icon" id="logo-container">
+                    </div>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" data-um="status" class="active">Status</a></li>
+                    <li><a href="#" data-um="maintenance">Maintenance</a></li>
+                    <li><a href="#" data-um="incidents">Incidents</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="status-banner" id="status-banner">
+                <div class="status-indicator">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="status-text">All systems operational</div>
+            </div>
+
+            <div id="content-container">
+                <div id="status-view" class="content-view">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">System Uptime</div>
+                                <div class="metric-icon">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="overall-uptime">100%</div>
+
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Active Incidents</div>
+                                <div class="metric-icon">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="active-incidents-count">0</div>
+
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <div class="metric-title">Response Time</div>
+                                <div class="metric-icon">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="avg-response-time">187ms</div>
+
+                        </div>
+                    </div>
+
+                    <div id="services-container" class="services-container">
+                    </div>
+
+                    <div class="timeline-section">
+                        <h2>System Timeline</h2>
+                        <div class="timeline-container" id="timeline-container">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance View -->
+                <div id="maintenance-view" class="content-view">
+                    <h2>Scheduled Maintenance</h2>
+                    <div class="maintenance-container" id="maintenance-container">
+                    </div>
+                </div>
+
+                <div id="incidents-view" class="content-view">
+                    <h2>Previous Incidents</h2>
+                    
+                    <div class="date-navigator">
+                        <button class="nav-button prev">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <div class="date-range" id="incident-date-range">Jan 2025 to Mar 2025</div>
+                        <button class="nav-button next">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="incidents-container" id="incidents-container">
+                    </div>
+                </div>
+                
+
+                <div id="service-detail-view" class="content-view">
+                    <div class="back-button" id="back-to-status">
+                        <i class="bi bi-arrow-left"></i> Back to status
+                    </div>
+                    
+                    <div class="service-detail-container" id="service-detail-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="powered-by" id="footer-copyright">
+        </div>
+        <div class="secondary-footer" id="powered-by-section">
+            <div class="secondary-powered-by">
+                Powered by <a href="https://lyrdy.co/uptime-from-statuspage-footer" target="_blank">Layeredy Uptime</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/uptimematrix.js"></script>
+</body>
+</html>

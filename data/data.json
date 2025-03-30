@@ -1,0 +1,146 @@
+{
+  "generated_at": "2025-03-29T19:54:01.234Z",
+  "services": [
+    {
+      "id": 1,
+      "name": "test",
+      "description": "ttest",
+      "category": "lyrdy",
+      "status": "up",
+      "response_time": 452,
+      "last_checked": "2025-03-29 19:54:01",
+      "uptime_last_24h": 100,
+      "uptime_history": [
+        {
+          "date": "2025-03-29",
+          "uptime": 100
+        },
+        {
+          "date": "2025-03-28",
+          "uptime": 100
+        },
+        {
+          "date": "2025-03-27",
+          "uptime": 100
+        },
+        {
+          "date": "2025-03-26",
+          "uptime": 100
+        },
+        {
+          "date": "2025-03-25",
+          "uptime": 75
+        },
+        {
+          "date": "2025-03-24",
+          "uptime": 100
+        }
+      ],
+      "response_time_current": 452,
+      "response_time_hr_avg": 532,
+      "response_time_day_avg": 532,
+      "response_time_mo_avg": 535,
+      "response_time_total_avg": 535
+    },
+    {
+      "id": 2,
+      "name": "test1",
+      "description": "test",
+      "category": "testing",
+      "status": "down",
+      "response_time": 0,
+      "last_checked": "2025-03-29 19:54:00",
+      "uptime_last_24h": 0,
+      "uptime_history": [
+        {
+          "date": "2025-03-29",
+          "uptime": 79
+        },
+        {
+          "date": "2025-03-28",
+          "uptime": 0
+        }
+      ],
+      "response_time_current": 0,
+      "response_time_hr_avg": 1,
+      "response_time_day_avg": 1,
+      "response_time_mo_avg": 1,
+      "response_time_total_avg": 1
+    }
+  ],
+  "incidents": [
+    {
+      "id": 3,
+      "title": "maitnenance",
+      "description": "descrpt",
+      "status": "ongoing",
+      "impact": "high",
+      "started_at": "2025-03-29T15:52",
+      "resolved_at": null,
+      "postmortem": null,
+      "is_maintenance": 1,
+      "created_at": "2025-03-29 19:52:52",
+      "updated_at": "2025-03-29 19:52:52",
+      "updates": [
+        {
+          "id": 3,
+          "incident_id": 3,
+          "message": "int",
+          "created_at": "2025-03-29 19:52:52"
+        }
+      ],
+      "affected_services": [
+        2
+      ],
+      "service_details": [
+        {
+          "name": "test1",
+          "category": "testing"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "test",
+      "description": "test incident",
+      "status": "resolved",
+      "impact": "high",
+      "started_at": "2025-03-24T19:03",
+      "resolved_at": "2025-03-24T15:43",
+      "postmortem": null,
+      "is_maintenance": 0,
+      "created_at": "2025-03-24 19:03:28",
+      "updated_at": "2025-03-24 19:43:10",
+      "updates": [
+        {
+          "id": 2,
+          "incident_id": 2,
+          "message": "init",
+          "created_at": "2025-03-24 19:03:28"
+        }
+      ],
+      "affected_services": [
+        1
+      ],
+      "service_details": [
+        {
+          "name": "test",
+          "category": "lyrdy"
+        }
+      ]
+    }
+  ],
+  "announcements": [
+    {
+      "id": 1,
+      "title": "anonuncement 1",
+      "content": "txt",
+      "is_active": 1,
+      "start_date": "2025-03-29T15:51",
+      "end_date": null,
+      "created_at": "2025-03-29 19:51:47",
+      "updated_at": "2025-03-29 19:51:47"
+    }
+  ],
+  "overall_uptime": "100"
+}
