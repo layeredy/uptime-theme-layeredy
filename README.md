@@ -1,6 +1,6 @@
 # Layeredy Theme
 > [!WARNING]
-> Layeredy Theme uses the **3.x** uptimematrix.js file which is in heavy development. Expect bugs, instability, and changes. Do not use in production
+> Layeredy Theme uses the **3.x** uptimematrix.js file which is in heavy development. Expect bugs, instability, and changes. UptimeMatrix.js 3 is considered partially unstable but is production-ready.
 
 ![image](https://github.com/user-attachments/assets/4108b8b2-1654-4c51-8e4a-4cdfe5a8d898)
 
