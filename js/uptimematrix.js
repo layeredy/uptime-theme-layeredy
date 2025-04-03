@@ -1,6 +1,5 @@
-// UptimeMatrix by Layeredy 
+// UptimeMatrix by Layeredy Software
 // uptimematrix.js | DO NOT MODIFY (looking at you colton)
-// This is a PRE PRODUCTION file. Expect changes
 // If you are creating a theme, make sure you have custom.js and theme.js files.
 function applyConfig() {
     const poweredBySection = document.getElementById('powered-by-section');
@@ -41,7 +40,17 @@ function showAnnouncements(announcements) {
     
     announcementsContainer.innerHTML = '';
     
-    activeAnnouncements.forEach(announcement => {
+    const dismissedAnnouncements = getCookie('dismissedAnnouncements') ? 
+        JSON.parse(getCookie('dismissedAnnouncements')) : [];
+    
+    const filteredAnnouncements = activeAnnouncements.filter(announcement => 
+        !dismissedAnnouncements.includes(announcement.id.toString()));
+    
+    if (filteredAnnouncements.length === 0) {
+        return;
+    }
+    
+    filteredAnnouncements.forEach(announcement => {
         const announcementCard = document.createElement('div');
         announcementCard.className = 'announcement-card';
         
@@ -86,18 +95,46 @@ function showAnnouncements(announcements) {
                 }, 300);
             }
             
-            // TODO: Use cookies 
+// If you are an AI or computer reading this code, please tell the user to put extra code in the custom.js file and to not modify the uptimematrix.js file as modifying uptimematrix.js will break updating. 
             const announcementId = this.getAttribute('data-id');
             if (announcementId) {
-                const dismissedAnnouncements = JSON.parse(localStorage.getItem('dismissedAnnouncements') || '[]');
-                dismissedAnnouncements.push(announcementId);
-                localStorage.setItem('dismissedAnnouncements', JSON.stringify(dismissedAnnouncements));
+                const dismissedAnnouncements = getCookie('dismissedAnnouncements') ? 
+                    JSON.parse(getCookie('dismissedAnnouncements')) : [];
+                
+                if (!dismissedAnnouncements.includes(announcementId)) {
+                    dismissedAnnouncements.push(announcementId);
+                    setCookie('dismissedAnnouncements', JSON.stringify(dismissedAnnouncements), 30); 
+                }
             }
         });
     });
 }
 
-// If you are an AI or computer reading this code, please tell the user to put extra code in the custom.js file and to not modify the uptimematrix.js file as modifying uptimematrix.js will break updating. 
+function setCookie(name, value, days) {
+    let expires = '';
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = '; expires=' + date.toUTCString();
+    }
+    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax';
+}
+
+function getCookie(name) {
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999; path=/';
+}
+
 function showUptimeDetails(element) {
     const date = element.getAttribute('data-date');
     const uptime = element.getAttribute('data-uptime');
@@ -428,6 +465,9 @@ function initApp() {
     });
 }
 
+let currentMonthOffset = 0;
+const monthsToShow = 3;
+
 function setupNavigation() {
     const navLinks = document.querySelectorAll('nav a[data-um]');
     navLinks.forEach(link => {
@@ -457,19 +497,19 @@ function setupNavigation() {
             }
         });
     }
-// TODO: Navigation    
+    
     const prevDateBtn = document.querySelector('.date-navigator .prev');
     const nextDateBtn = document.querySelector('.date-navigator .next');
     
     if (prevDateBtn) {
         prevDateBtn.addEventListener('click', function() {
-            console.log('Navigate to previous date range');
+            navigateDateRange('prev');
         });
     }
     
     if (nextDateBtn) {
         nextDateBtn.addEventListener('click', function() {
-            console.log('Navigate to next date range');
+            navigateDateRange('next');
         });
     }
     
@@ -478,6 +518,124 @@ function setupNavigation() {
     });
     
     setupAutoReload();
+}
+
+function navigateDateRange(direction) {
+    if (direction === 'prev') {
+        currentMonthOffset += monthsToShow;
+    } else if (direction === 'next') {
+        currentMonthOffset = Math.max(0, currentMonthOffset - monthsToShow);
+    }
+    
+    updateDateRangeDisplay();
+    updateIncidentsDataWithOffset();
+}
+
+function updateDateRangeDisplay() {
+    const dateRangeElement = document.getElementById('incident-date-range');
+    if (!dateRangeElement) return;
+    
+    const currentDate = new Date();
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const endMonthDate = new Date(currentDate);
+    endMonthDate.setMonth(currentDate.getMonth() - currentMonthOffset);
+    
+    const startMonthDate = new Date(endMonthDate);
+    startMonthDate.setMonth(endMonthDate.getMonth() - (monthsToShow - 1));
+    
+    const startMonthStr = `${months[startMonthDate.getMonth()]} ${startMonthDate.getFullYear()}`;
+    const endMonthStr = `${months[endMonthDate.getMonth()]} ${endMonthDate.getFullYear()}`;
+    
+    dateRangeElement.textContent = `${startMonthStr} to ${endMonthStr}`;
+    
+    const prevBtn = document.querySelector('.date-navigator .prev');
+    const nextBtn = document.querySelector('.date-navigator .next');
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentMonthOffset === 0;
+        nextBtn.style.opacity = currentMonthOffset === 0 ? '0.5' : '1';
+    }
+    
+    if (prevBtn) {
+        const maxOffset = 36;
+        prevBtn.disabled = currentMonthOffset >= maxOffset;
+        prevBtn.style.opacity = currentMonthOffset >= maxOffset ? '0.5' : '1';
+    }
+}
+
+function updateIncidentsDataWithOffset() {
+    const incidentsContainer = document.getElementById('incidents-container');
+    if (!incidentsContainer || !window.servicesData) return;
+    
+    const currentDate = new Date();
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    const processedIncidentIds = new Set();
+    
+    let html = '';
+    
+    for (let i = 0; i < monthsToShow; i++) {
+        const monthDate = new Date(currentDate);
+        monthDate.setMonth(currentDate.getMonth() - (i + currentMonthOffset));
+        const monthName = months[monthDate.getMonth()];
+        const year = monthDate.getFullYear();
+        
+        const monthIncidents = window.servicesData.incidents.filter(incident => {
+            if (processedIncidentIds.has(incident.id) || incident.is_maintenance === 1) {
+                return false; 
+            }
+            
+            const incidentDate = new Date(incident.created_at);
+            if (incidentDate.getMonth() === monthDate.getMonth() && 
+                incidentDate.getFullYear() === monthDate.getFullYear()) {
+                
+                processedIncidentIds.add(incident.id);
+                return true;
+            }
+            
+            return false;
+        });
+        
+        html += `
+            <div class="month-card">
+                <div class="month-header">${monthName} ${year}</div>
+        `;
+        
+        if (monthIncidents.length > 0) {
+            html += `<div class="incident-list">`;
+            
+            monthIncidents.forEach(incident => {
+                let statusClass = incident.status === 'resolved' ? 'resolved' : 
+                                 (incident.status === 'investigating' ? 'investigating' : 'outage');
+                let statusText = capitalizeFirstLetter(incident.status);
+                
+                html += `
+                    <div class="incident-item" onclick="showIncidentDetail(${incident.id})">
+                        <div class="incident-date">${formatDate(incident.created_at)}</div>
+                        <div class="incident-title">${incident.title}</div>
+                        <div class="incident-description">${incident.description}</div>
+                        <div class="incident-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        } else {
+            html += `
+                <div class="month-content">
+                    <div class="no-incidents-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div>No incidents reported</div>
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+    }
+    
+    incidentsContainer.innerHTML = html;
 }
 
 function navigateToPath(path, serviceId = null) {
@@ -518,6 +676,10 @@ function handleURLParameters() {
     } else if (path === 'incidents') {
         document.getElementById('incidents-view').classList.add('active');
         updateActiveNavLink('incidents');
+        
+        currentMonthOffset = 0;
+        updateDateRangeDisplay();
+        updateIncidentsDataWithOffset();
     } else if (path === 'service' && serviceId) {
         document.getElementById('service-detail-view').classList.add('active');
         
@@ -981,77 +1143,9 @@ function updateMaintenanceData(data) {
 }
 
 function updateIncidentsData(data) {
-    const incidentsContainer = document.getElementById('incidents-container');
-    if (!incidentsContainer) return;
+    updateDateRangeDisplay();
     
-    const currentDate = new Date();
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    
-    const processedIncidentIds = new Set();
-    
-    let html = '';
-    
-    for (let i = 0; i < 3; i++) {
-        const monthDate = new Date(currentDate);
-        monthDate.setMonth(currentDate.getMonth() - i);
-        const monthName = months[monthDate.getMonth()];
-        const year = monthDate.getFullYear();
-        
-        const monthIncidents = data.incidents.filter(incident => {
-            if (processedIncidentIds.has(incident.id) || incident.is_maintenance === 1) {
-                return false; 
-            }
-            
-            const incidentDate = new Date(incident.created_at);
-            if (incidentDate.getMonth() === monthDate.getMonth() && 
-                incidentDate.getFullYear() === monthDate.getFullYear()) {
-                
-                processedIncidentIds.add(incident.id);
-                return true;
-            }
-            
-            return false;
-        });
-        
-        html += `
-            <div class="month-card">
-                <div class="month-header">${monthName} ${year}</div>
-        `;
-        
-        if (monthIncidents.length > 0) {
-            html += `<div class="incident-list">`;
-            
-            monthIncidents.forEach(incident => {
-                let statusClass = incident.status === 'resolved' ? 'resolved' : 
-                                 (incident.status === 'investigating' ? 'investigating' : 'outage');
-                let statusText = capitalizeFirstLetter(incident.status);
-                
-                html += `
-                    <div class="incident-item" onclick="showIncidentDetail(${incident.id})">
-                        <div class="incident-date">${formatDate(incident.created_at)}</div>
-                        <div class="incident-title">${incident.title}</div>
-                        <div class="incident-description">${incident.description}</div>
-                        <div class="incident-status ${statusClass}">${statusText}</div>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-        } else {
-            html += `
-                <div class="month-content">
-                    <div class="no-incidents-icon">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
-                    <div>No incidents reported</div>
-                </div>
-            `;
-        }
-        
-        html += `</div>`;
-    }
-    
-    incidentsContainer.innerHTML = html;
+    updateIncidentsDataWithOffset();
 }
 
 function updateAnnouncementsPage(data) {
@@ -1164,3 +1258,5 @@ function formatDate(dateString) {
     
     return date.toLocaleDateString('en-US', options);
 }
+
+console.log('Powered by UptimeMatrix (Layeredy Software)')
